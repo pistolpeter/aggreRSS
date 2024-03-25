@@ -12,3 +12,10 @@ RETURNING *;
 
 -- name: FeedsGetAll :many
 SELECT * FROM feeds;
+
+
+-- name: GetNextFeedsToFetch :many
+SELECT *
+    FROM feeds
+    ORDER BY LAST_FETCHED_AT DESC NULLS FIRST
+    LIMIT $1;
