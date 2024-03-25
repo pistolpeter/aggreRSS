@@ -19,3 +19,9 @@ SELECT *
     FROM feeds
     ORDER BY LAST_FETCHED_AT DESC NULLS FIRST
     LIMIT $1;
+
+-- name: MarkFeedFetched :one
+UPDATE feeds
+SET LAST_FETCHED_AT = NOW()::TIMESTAMP
+WHERE id = $1
+RETURNING *;
