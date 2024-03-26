@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -22,6 +23,7 @@ type Item struct {
 	Title       string `xml:"title"`
 	Link        string `xml:"link"`
 	Description string `xml:"description"`
+	PubDate     string `xml:"pubDate"`
 }
 
 func FetchFeedData(url string) (RSS, error) {
@@ -36,6 +38,7 @@ func FetchFeedData(url string) (RSS, error) {
 	decoder := xml.NewDecoder(resp.Body)
 	err = decoder.Decode(&data)
 	if err != nil {
+		fmt.Println(url)
 		return RSS{}, errors.New("bad decode")
 	}
 

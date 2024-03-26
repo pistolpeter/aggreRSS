@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
-	"log"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/pistolpeter/aggreRSS/internal/database"
 )
 
@@ -32,11 +34,39 @@ func worker(interval time.Duration, fetchCount int, db *database.Queries) {
 
 					data, err := FetchFeedData(url)
 					if err != nil {
-						fmt.Println("Error Fetching feed", err)
+						fmt.Println("Error Fetching Posts: ", err)
 						return
 					}
 
-					log.Println(data.Channel.Title)
+					for _, item := range data.Channel.Items {
+						var publishedAt sql.NullTime
+						if itemTime, err := time.Parse(time.RFC1123Z, item.PubDate); err == nil {
+							publishedAt = sql.NullTime{
+								Time:  itemTime,
+								Valid: true,
+							}
+						}
+						_, err := db.PostCreate(context.TODO(), database.PostCreateParams{
+							ID:        uuid.New(),
+							CreatedAt: time.Now(),
+							UpdatedAt: time.Now(),
+							Title:     item.Title,
+							Url:       item.Link,
+							Description: sql.NullString{
+								String: item.Description,
+								Valid:  true,
+							},
+							PublishedAt: publishedAt,
+							FeedID:      feed.ID,
+						})
+						if err != nil {
+							if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+								continue
+							}
+							fmt.Println("error on post creatation: ", err)
+							continue
+						}
+					}
 				}(feed.Url)
 				db.MarkFeedFetched(context.TODO(), feed.ID)
 			}

@@ -49,8 +49,8 @@ func (cfg *apiConfig) handleFeedsCreate(user database.User) http.HandlerFunc {
 		})
 
 		resp := response{
-			Feed:       databaseFeedsToFeeds(feed),
-			FeedFollow: databaseFeedFollowToFeedFollow(&feedFollow),
+			Feed:       databaseFeedToFeed(feed),
+			FeedFollow: databaseFeedFollowToFeedFollow(feedFollow),
 		}
 
 		util.RespondWithJSON(w, http.StatusOK, resp)
@@ -64,11 +64,6 @@ func (cfg *apiConfig) handleFeedsGetAll() http.HandlerFunc {
 			util.RespondWithError(w, http.StatusInternalServerError, "Could not retrieve feeds")
 			return
 		}
-		var respFeeds []Feed
-		for _, feed := range feeds {
-			f := databaseFeedsToFeeds(feed)
-			respFeeds = append(respFeeds, f)
-		}
-		util.RespondWithJSON(w, 200, respFeeds)
+		util.RespondWithJSON(w, http.StatusOK, databaseFeedsToFeeds(feeds))
 	}
 }

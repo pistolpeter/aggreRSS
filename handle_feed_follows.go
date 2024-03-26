@@ -35,7 +35,7 @@ func (cfg *apiConfig) handleFeedFollowsCreate(user database.User) http.HandlerFu
 			util.RespondWithError(w, http.StatusInternalServerError, "Couldn't create follow")
 			return
 		}
-		util.RespondWithJSON(w, http.StatusOK, databaseFeedFollowToFeedFollow(&feedFollow))
+		util.RespondWithJSON(w, http.StatusOK, databaseFeedFollowToFeedFollow(feedFollow))
 	}
 }
 
@@ -69,7 +69,7 @@ func (cfg *apiConfig) handleFeedFollowGetAll(user database.User) http.HandlerFun
 
 		var respFeedFollows []FeedFollow
 		for _, ff := range feedFollows {
-			respFeedFollows = append(respFeedFollows, databaseFeedFollowToFeedFollow(&ff))
+			respFeedFollows = append(respFeedFollows, databaseFeedFollowToFeedFollow(ff))
 		}
 
 		util.RespondWithJSON(w, http.StatusOK, respFeedFollows)

@@ -131,7 +131,7 @@ func (q *Queries) GetNextFeedsToFetch(ctx context.Context, limit int32) ([]Feed,
 
 const markFeedFetched = `-- name: MarkFeedFetched :one
 UPDATE feeds
-SET LAST_FETCHED_AT = NOW()::TIMESTAMP
+SET LAST_FETCHED_AT = NOW()::TIMESTAMP, updated_at = NOW()::TIMESTAMP
 WHERE id = $1
 RETURNING id, created_at, updated_at, name, url, user_id, last_fetched_at
 `

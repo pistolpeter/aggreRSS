@@ -22,6 +22,6 @@ SELECT *
 
 -- name: MarkFeedFetched :one
 UPDATE feeds
-SET LAST_FETCHED_AT = NOW()::TIMESTAMP
+SET LAST_FETCHED_AT = NOW()::TIMESTAMP, updated_at = NOW()::TIMESTAMP
 WHERE id = $1
 RETURNING *;
