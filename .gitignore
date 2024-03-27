@@ -15,6 +15,10 @@
 *.out
 
 .env
+.s.*
+tmp
+result
+logfile
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
